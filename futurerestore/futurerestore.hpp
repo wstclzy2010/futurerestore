@@ -116,7 +116,7 @@ public:
     static char *getNonceFromAPTicket(const char* apticketPath);
     static plist_t loadPlistFromFile(const char *path);
     static void saveStringToFile(const char *str, const char *path);
-    static char *getPathOfElementInManifest(const char *element, const char *manifeststr, const char *model, int isUpdateInstall);
+    static char *getPathOfElementInManifest(const char *element, const char *manifeststr, struct idevicerestore_client_t* client, int isUpdateInstall);
 
 };
 
