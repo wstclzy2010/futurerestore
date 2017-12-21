@@ -3,7 +3,7 @@
 	url = https://github.com/tihmstar/img4tool.git
 [submodule "external/tsschecker"]
 	path = external/tsschecker
-	url = https://github.com/tihmstar/tsschecker.git
+	url = https://github.com/encounter/tsschecker.git
 [submodule "external/idevicerestore"]
 	path = external/idevicerestore
 	url = https://github.com/encounter/idevicerestore.git
