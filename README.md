@@ -2,8 +2,8 @@
 _futurerestore is a hacked up idevicerestore wrapper, which allows manually specifying SEP and Baseband for restoring_
 
 Latest compiled version can be found here:  
-(MacOS & Linux)  
-http://api.tihmstar.net/builds/futurerestore/futurerestore-latest.zip
+(macOS only)
+https://github.com/encounter/futurerestore/releases
 
 ---
 
