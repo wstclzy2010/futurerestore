@@ -17,6 +17,13 @@
 #include <jssy.h>
 #include <plist/plist.h>
 
+#if defined _WIN32 || defined __CYGWIN__
+#ifndef WIN32
+//make sure WIN32 is defined if compiling for windows
+#define WIN32
+#endif
+#endif
+
 using namespace std;
 
 template <typename T>

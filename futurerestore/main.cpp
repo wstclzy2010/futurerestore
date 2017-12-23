@@ -17,6 +17,12 @@
 #ifdef HAVE_LIBIPATCHER
 #include <libipatcher/libipatcher.hpp>
 #endif
+#ifdef WIN32
+#include <windows.h>
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+#endif
 #include "config.h"
 
 #define safeFree(buf) if (buf) free(buf), buf = NULL
@@ -74,6 +80,14 @@ void cmd_help(){
 using namespace std;
 int main(int argc, const char * argv[]) {
 #define reterror(code,a ...) do {error(a); err = code; goto error;} while (0)
+
+#ifdef WIN32
+    DWORD termFlags;
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (GetConsoleMode(handle, &termFlags))
+        SetConsoleMode(handle, termFlags | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
+
     int err=0;
     int res = -1;
     printf("Version: " VERSION_COMMIT_SHA_FUTURERESTORE" - " VERSION_COMMIT_COUNT_FUTURERESTORE"\n");
