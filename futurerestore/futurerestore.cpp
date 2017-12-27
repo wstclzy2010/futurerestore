@@ -397,7 +397,7 @@ uint64_t futurerestore::getBasebandGoldCertIDFromDevice(){
     return val;
 }
 
-size_t futurerestore::getBBSNumSizeFromDevice() {
+uint64_t futurerestore::getBBSNumSizeFromDevice() {
     if (!_client->preflight_info){
         if (normal_get_preflight_info(_client, &_client->preflight_info) == -1){
             printf("[WARNING] Failed to read BasebandSerialNumber from device! Is it already in recovery?\n");
@@ -411,7 +411,7 @@ size_t futurerestore::getBBSNumSizeFromDevice() {
         return 0;
     }
     char *data = nullptr;
-    size_t val = 0;
+    uint64_t val = 0;
     plist_get_data_val(node, &data, &val);
     free(data);
     return val;

@@ -218,7 +218,7 @@ int main(int argc, const char * argv[]) {
     }
     if (exitRecovery) {
         client.exitRecovery();
-        info("Done");
+        info("Done\n");
         return 0;
     }
     

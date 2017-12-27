@@ -112,7 +112,7 @@ public:
     
     
     uint64_t getBasebandGoldCertIDFromDevice();
-    size_t getBBSNumSizeFromDevice();
+    uint64_t getBBSNumSizeFromDevice();
     
     int doRestore(const char *ipsw);
     int doJustBoot(const char *ipsw, std::string bootargs = "");
