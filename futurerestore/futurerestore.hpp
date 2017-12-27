@@ -79,6 +79,7 @@ public:
     uint64_t getDeviceEcid();
     void putDeviceIntoRecovery();
     void setAutoboot(bool val);
+    void exitRecovery();
     void waitForNonce();
     void waitForNonce(vector<const char *>nonces, size_t nonceSize);
     void loadAPTickets(const vector<const char *> &apticketPaths);

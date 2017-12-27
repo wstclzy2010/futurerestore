@@ -178,6 +178,12 @@ void futurerestore::setAutoboot(bool val){
     }
 }
 
+void futurerestore::exitRecovery() {
+    setAutoboot(true);
+    recovery_send_reset(_client);
+    recovery_client_free(_client);
+}
+
 plist_t futurerestore::nonceMatchesApTickets(){
     if (!_didInit) reterror(-1, "did not init\n");
     if (getDeviceMode(true) != MODE_RECOVERY){
