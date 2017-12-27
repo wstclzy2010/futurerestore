@@ -37,6 +37,7 @@ static struct option longopts[] = {
     { "baseband-manifest",  required_argument,      NULL, 'p' },
     { "sep",                required_argument,      NULL, 's' },
     { "sep-manifest",       required_argument,      NULL, 'm' },
+    { "source-ipsw",        required_argument,      NULL, 'i' },
     { "wait",               no_argument,            NULL, 'w' },
     { "update",             no_argument,            NULL, 'u' },
     { "debug",              no_argument,            NULL, 'd' },
@@ -58,25 +59,28 @@ static struct option longopts[] = {
 #define FLAG_IS_PWN_DFU         1 << 5
 
 void cmd_help(){
-    printf("Usage: futurerestore [OPTIONS] IPSW\n");
-    printf("Allows restoring nonmatching iOS/Sep/Baseband\n\n");
+    printf("Usage: futurerestore [OPTIONS] /path/to/ipsw\n\n");
+    printf("Options:\n\n");
 
-    
-    printf("  -t, --apticket PATH\t\tApticket used for restoring\n");
-    printf("  -b, --baseband PATH\t\tBaseband to be flashed\n");
-    printf("  -p, --baseband-manifest PATH\tBuildmanifest for requesting baseband ticket\n");
-    printf("  -s, --sep PATH\t\tSep to be flashed\n");
-    printf("  -m, --sep-manifest PATH\tBuildmanifest for requesting sep ticket\n");
-    printf("  -w, --wait\t\t\tkeep rebooting until nonce matches APTicket\n");
-    printf("  -u, --update\t\t\tupdate instead of erase install\n");
-    printf("      --latest-sep\t\tuse latest signed sep instead of manually specifying one(may cause bad restore)\n");
-    printf("      --latest-baseband\t\tuse latest signed baseband instead of manually specifying one(may cause bad restore)\n");
+    printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
+    printf("  -u, --update\t\t\tUpdate instead of erase install (requires appropriate APTicket)\n");
+    printf("  -w, --wait\t\t\tKeep rebooting until nonce matches APTicket (nonce collision, unreliable)\n");
+    printf("  -d, --debug\t\t\tVerbose debug output (useful for error logs)\n");
+    printf("      --latest-sep\t\tUse latest signed sep instead of manually specifying one (may cause bad restore)\n");
+    printf("      --latest-baseband\t\tUse latest signed baseband instead of manually specifying one (may cause bad restore)\n");
+    printf("      --no-baseband\t\tSkip checks and don't flash baseband\n");
+    printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod or some wifi only iPads)\n");
 #ifdef HAVE_LIBIPATCHER
     printf("      --use-pwndfu\t\tuse this for restoring devices with odysseus method. Device needs to be in kDFU mode already\n");
     printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set bootargs\n");
 #endif
-    printf("      --no-baseband\t\tskip checks and don't flash baseband.\n");
-    printf("                   \t\tWARNING: only use this for device without baseband (eg iPod or some wifi only iPads)\n");
+    printf("\nTo extract baseband/SEP automatically from IPSW:\n\n");
+    printf("  -i, --source-ipsw PATH\tSource IPSW to extract baseband/SEP from\n");
+    printf("\nTo manually specify baseband/SEP:\n\n");
+    printf("  -b, --baseband PATH\t\tBaseband to be flashed\n");
+    printf("  -p, --baseband-manifest PATH\tBuildManifest for requesting baseband ticket\n");
+    printf("  -s, --sep PATH\t\tSEP to be flashed\n");
+    printf("  -m, --sep-manifest PATH\tBuildManifest for requesting sep ticket\n");
     printf("\n");
     printf("Homepage: <" PACKAGE_URL ">\n");
 }
@@ -115,6 +119,7 @@ int main(int argc, const char * argv[]) {
     const char *sepPath = NULL;
     const char *sepManifestPath = NULL;
     const char *bootargs = NULL;
+    const char *sourceIpswPath = nullptr;
     
     vector<const char*> apticketPaths;
     
@@ -127,7 +132,7 @@ int main(int argc, const char * argv[]) {
     }
 
     
-    while ((opt = getopt_long(argc, (char* const *)argv, "ht:b:p:s:m:wud01", longopts, &optindex)) > 0) {
+    while ((opt = getopt_long(argc, (char* const *)argv, "t:i:b:p:s:m:wud012", longopts, &optindex)) > 0) {
         switch (opt) {
             case 't': // long option: "apticket"; can be called as short option
                 apticketPaths.push_back(optarg);
@@ -143,6 +148,9 @@ int main(int argc, const char * argv[]) {
                 break;
             case 'm': // long option: "sep-manifest"; can be called as short option
                 sepManifestPath = optarg;
+                break;
+            case 'i': // long option: "source-ipsw"; can be called as short option
+                sourceIpswPath = optarg;
                 break;
             case 'w': // long option: "wait"; can be called as short option
                 flags |= FLAG_WAIT;
@@ -206,8 +214,8 @@ int main(int argc, const char * argv[]) {
         
         if (!(
               ((apticketPaths.size() && ipsw)
-               && ((basebandPath && basebandManifestPath) || ((flags & FLAG_LATEST_BASEBAND) || (flags & FLAG_NO_BASEBAND)))
-               && ((sepPath && sepManifestPath) || (flags & FLAG_LATEST_SEP) || client.is32bit())
+               && ((basebandPath && basebandManifestPath) || sourceIpswPath || (flags & FLAG_LATEST_BASEBAND) || (flags & FLAG_NO_BASEBAND))
+               && ((sepPath && sepManifestPath) || sourceIpswPath || (flags & FLAG_LATEST_SEP) || client.is32bit())
               ) || (ipsw && bootargs && (flags & FLAG_IS_PWN_DFU))
             )) {
             
@@ -228,13 +236,17 @@ int main(int argc, const char * argv[]) {
             irecv_device_t device = client.loadDeviceInfo();
             devVals.deviceModel = const_cast<char *>(device->product_type);
             devVals.deviceBoard = const_cast<char *>(device->hardware_model);
-            
-            if (flags & FLAG_LATEST_SEP){
+
+            if (flags & FLAG_LATEST_SEP) {
                 info("user specified to use latest signed sep\n");
                 client.loadLatestSep();
-            }else if (!client.is32bit()){
-                client.loadSep(sepPath);
-                client.setSepManifestPath(sepManifestPath);
+            } else if (!client.is32bit()) {
+                if (sourceIpswPath != nullptr) {
+                    client.loadSepFromIpsw(sourceIpswPath);
+                } else {
+                    client.loadSep(sepPath);
+                    client.setSepManifestPath(sepManifestPath);
+                }
             }
             
             versVals.basebandMode = kBasebandModeWithoutBaseband;
@@ -254,10 +266,12 @@ int main(int argc, const char * argv[]) {
                 }
                 printf("\n");
             }else{
-                if (flags & FLAG_LATEST_BASEBAND){
+                if (flags & FLAG_LATEST_BASEBAND) {
                     info("user specified to use latest signed baseband (WARNING, THIS CAN CAUSE A NON-WORKING RESTORE)\n");
                     client.loadLatestBaseband();
-                }else{
+                } else if (sourceIpswPath != nullptr) {
+                    client.loadBasebandFromIpsw(sourceIpswPath);
+                } else {
                     client.setBasebandPath(basebandPath);
                     client.setBasebandManifestPath(basebandManifestPath);
                     printf("Did set sep+baseband path and firmware\n");

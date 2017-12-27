@@ -636,7 +636,7 @@ int futurerestore::doRestore(const char *ipsw){
     
     if (im4mEcid != deviceEcid) {
         error("ECID inside APTicket does not match device ECID\n");
-        printf("APTicket is valid for %16llu (dec) but device is %16llu (dec)\n",im4mEcid,deviceEcid);
+        printf("APTicket is valid for %16lu (dec) but device is %16lu (dec)\n",im4mEcid,deviceEcid);
         reterror(-45, "APTicket can't be used for restoring this device\n");
     }else
         printf("Verified ECID in APTicket matches device ECID\n");
@@ -652,7 +652,7 @@ int futurerestore::doRestore(const char *ipsw){
         
         if (im4mEcid != deviceEcid) {
             error("ECID inside APTicket does not match device ECID\n");
-            printf("APTicket is valid for %16llu (dec) but device is %16llu (dec)\n",im4mEcid,deviceEcid);
+            printf("APTicket is valid for %16lu (dec) but device is %16lu (dec)\n",im4mEcid,deviceEcid);
             reterror(-45, "APTicket can't be used for restoring this device\n");
         }else
             printf("Verified ECID in APTicket matches device ECID\n");
@@ -1164,6 +1164,79 @@ void futurerestore::loadLatestSep(){
     setSepManifestPath(SEP_MANIFEST_TMP_PATH);
 }
 
+void futurerestore::loadSepFromIpsw(const char *ipswPath) {
+    irecv_device_t device = loadDeviceInfo();
+    char *buildManifestString = nullptr;
+    uint32_t buildManifestSize;
+    plist_t buildIdentity = nullptr;
+    char *path = nullptr;
+    int unused;
+
+    info("Extracting SEP from IPSW...\n");
+    if (ipsw_extract_build_manifest(ipswPath, &_sepbuildmanifest, &unused) < 0) {
+        reterror(-3, "ERROR: Unable to extract BuildManifest from %s. Firmware file might be corrupt.\n", ipswPath);
+    }
+    if (build_manifest_check_compatibility(_sepbuildmanifest, device->product_type) < 0) {
+        reterror(-4, "ERROR: Could not make sure this firmware is suitable for the current device. Refusing to continue.\n");
+    }
+    if (!(buildIdentity = getBuildidentityWithBoardconfig(_sepbuildmanifest, device->hardware_model, _isUpdateInstall))) {
+        reterror(-5, "ERROR: Unable to find any build identities in IPSW\n");
+    }
+    if (build_identity_get_component_path(buildIdentity, "SEP", &path) < 0) {
+        reterror(-6, "ERROR: Failed to find SEP component path\n");
+    }
+    if (extract_component(ipswPath, path,
+                          reinterpret_cast<unsigned char **>(&_client->sepfwdata),
+                          reinterpret_cast<unsigned int *>(&_client->sepfwdatasize)) < 0) {
+        reterror(-7, "ERROR: Failed to extract SEP from IPSW\n");
+    }
+
+    plist_to_xml(_sepbuildmanifest, &buildManifestString, &buildManifestSize);
+    saveStringToFile(buildManifestString, SEP_MANIFEST_TMP_PATH);
+    _sepbuildmanifestPath = SEP_MANIFEST_TMP_PATH;
+
+    info("Extracted SEP with size %lu\n", _client->sepfwdatasize);
+}
+
+void futurerestore::loadBasebandFromIpsw(const char *ipswPath) {
+    irecv_device_t device = loadDeviceInfo();
+    char *buildManifestString = nullptr;
+    uint32_t buildManifestSize;
+    plist_t buildIdentity = nullptr;
+    char *path = nullptr;
+    int unused;
+    uint8_t *basebandFirmware;
+    uint32_t basebandFirmwareSize;
+
+    info("Extracting baseband from IPSW...\n");
+    if (ipsw_extract_build_manifest(ipswPath, &_basebandbuildmanifest, &unused) < 0) {
+        reterror(-3, "ERROR: Unable to extract BuildManifest from %s. Firmware file might be corrupt.\n", ipswPath);
+    }
+    if (build_manifest_check_compatibility(_basebandbuildmanifest, device->product_type) < 0) {
+        reterror(-4, "ERROR: Could not make sure this firmware is suitable for the current device. Refusing to continue.\n");
+    }
+    if (!(buildIdentity = getBuildidentityWithBoardconfig(_basebandbuildmanifest, device->hardware_model, _isUpdateInstall))) {
+        reterror(-5, "ERROR: Unable to find any build identities in IPSW\n");
+    }
+    if (build_identity_get_component_path(buildIdentity, "BasebandFirmware", &path) < 0) {
+        reterror(-6, "ERROR: Failed to find BasebandFirmware component path\n");
+    }
+    if (extract_component(ipswPath, path, &basebandFirmware, &basebandFirmwareSize) < 0) {
+        reterror(-7, "ERROR: Failed to extract BasebandFirmware from IPSW\n");
+    }
+    FILE *basebandFile = fopen(BASEBAND_TMP_PATH, "wb");
+    if (!basebandFile || fwrite(basebandFirmware, 1, basebandFirmwareSize, basebandFile) != basebandFirmwareSize) {
+        reterror(-8, "ERROR: Failed to write baseband firmware to temporary file\n");
+    }
+
+    plist_to_xml(_basebandbuildmanifest, &buildManifestString, &buildManifestSize);
+    saveStringToFile(buildManifestString, BASEBAND_MANIFEST_TMP_PATH);
+    _basebandbuildmanifestPath = BASEBAND_MANIFEST_TMP_PATH;
+    _basebandPath = BASEBAND_TMP_PATH;
+
+    info("Extracted BasebandFirmware with size %d\n", basebandFirmwareSize);
+}
+
 void futurerestore::setSepManifestPath(const char *sepManifestPath){
     if (!(_sepbuildmanifest = loadPlistFromFile(_sepbuildmanifestPath = sepManifestPath)))
         reterror(-14, "failed to load SEPManifest");
@@ -1201,9 +1274,6 @@ void futurerestore::setBasebandPath(const char *basebandPath){
     _basebandPath = basebandPath;
     fclose(fbb);
 }
-
-
-#pragma mark static methods
 
 inline void futurerestore::saveStringToFile(const char *str, const char *path){
     FILE *f = fopen(path, "w");

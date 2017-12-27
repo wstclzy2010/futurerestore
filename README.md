@@ -14,7 +14,36 @@ https://github.com/encounter/futurerestore/releases
   * Re-restoring 32bit devices to iOS 9 with @alitek123's no-nonce method
 * Allows restoring any nonmatching signed iOS/Sep/Baseband
 
-# Dependencies
+# Help  
+_(might become outdated):_
+
+```
+Usage: futurerestore [OPTIONS] /path/to/ipsw
+
+Options:
+
+  -t, --apticket PATH		APTicket used for restoring
+  -u, --update			Update instead of erase install (requires appropriate APTicket)
+  -w, --wait			Keep rebooting until nonce matches APTicket (nonce collision, unreliable)
+  -d, --debug			Verbose debug output (useful for error logs)
+      --latest-sep		Use latest signed sep instead of manually specifying one (may cause bad restore)
+      --latest-baseband		Use latest signed baseband instead of manually specifying one (may cause bad restore)
+      --no-baseband		Skip checks and don't flash baseband
+                   		WARNING: only use this for device without a baseband (eg. iPod or some wifi only iPads)
+
+To extract baseband/SEP automatically from IPSW:
+
+  -i, --source-ipsw PATH	Source IPSW to extract baseband/SEP from
+
+To manually specify baseband/SEP:
+
+  -b, --baseband PATH		Baseband to be flashed
+  -p, --baseband-manifest PATH	BuildManifest for requesting baseband ticket
+  -s, --sep PATH		SEP to be flashed
+  -m, --sep-manifest PATH	BuildManifest for requesting sep ticket
+```
+
+# Compile Dependencies
 *  ## Bundled Libs
   Those don't need to be installed manually
   * jsmn
@@ -26,29 +55,9 @@ https://github.com/encounter/futurerestore/releases
   * [libplist](https://github.com/libimobiledevice/libplist)
 * ## Submodules
   Make sure these projects compile on your system (install it's dependencies)
-  * [tsschecker](https://github.com/tihmstar/tsschecker)
+  * [tsschecker](https://github.com/encounter/tsschecker)
   * [img4tool](https://github.com/tihmstar/img4tool)
-  * [idevicerestore](https://github.com/tihmstar/idevicerestore)
-
-# Help  
-_(might become outdated):_
-
-Usage: `futurerestore [OPTIONS] IPSW`
-
-
-| option (short) | option (long)             | description                                                                       |
-|----------------|---------------------------|-----------------------------------------------------------------------------------|
-|  -t | --apticket | PATH		Apticket used for restoring |
-|  -b | --baseband | PATH		Baseband to be flashed |
-|  -p | --baseband-manifest | PATH	Buildmanifest for requesting baseband ticket |
-|  -s | --sep PATH |		Sep to be flashed |
-|  -m | --sep-manifest PATH |	Buildmanifest for requesting sep ticket |
-|  -w | --wait		 |	keep rebooting until nonce matches APTicket |
-|  -u | --update		 |	update instead of erase install |
-|  -d | --debug		 |	show all code, use to save a log for debug testing |
-|     |--latest-sep	 |	use latest signed sep instead of manually specifying  one(may cause bad restore) |
-|     | --latest-baseband |		use latest signed baseband instead of manually  specifying one(may cause bad restore) |
-|     | --no-baseband	 |	skip checks and don't flash baseband. WARNING: only use this for device without baseband (eg iPod or some wifi only iPads) |
+  * [idevicerestore](https://github.com/encounter/idevicerestore)
 
 ---
 
