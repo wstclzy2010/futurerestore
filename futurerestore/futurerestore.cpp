@@ -376,18 +376,38 @@ void futurerestore::loadAPTickets(const vector<const char *> &apticketPaths){
 uint64_t futurerestore::getBasebandGoldCertIDFromDevice(){
     if (!_client->preflight_info){
         if (normal_get_preflight_info(_client, &_client->preflight_info) == -1){
-            printf("[WARNING] failed to read BasebandGoldCertID from device! Is it already in recovery?\n");
+            printf("[WARNING] Failed to read BasebandGoldCertID from device! Is it already in recovery?\n");
             return 0;
         }
     }
     plist_t node;
     node = plist_dict_get_item(_client->preflight_info, "CertID");
     if (!node || plist_get_node_type(node) != PLIST_UINT) {
-        error("Unable to find required BbGoldCertId in parameters\n");
+        error("Unable to find required CertID in in device preflight info\n");
         return 0;
     }
     uint64_t val = 0;
     plist_get_uint_val(node, &val);
+    return val;
+}
+
+size_t futurerestore::getBBSNumSizeFromDevice() {
+    if (!_client->preflight_info){
+        if (normal_get_preflight_info(_client, &_client->preflight_info) == -1){
+            printf("[WARNING] Failed to read BasebandSerialNumber from device! Is it already in recovery?\n");
+            return 0;
+        }
+    }
+    plist_t node;
+    node = plist_dict_get_item(_client->preflight_info, "ChipSerialNo");
+    if (!node || plist_get_node_type(node) != PLIST_DATA) {
+        error("Unable to find required ChipSerialNo in device preflight info\n");
+        return 0;
+    }
+    char *data = nullptr;
+    size_t val = 0;
+    plist_get_data_val(node, &data, &val);
+    free(data);
     return val;
 }
 
@@ -1065,7 +1085,7 @@ void futurerestore::loadFirmwareTokens(){
     }
 }
 
-const char *futurerestore::getDeviceModelNoCopy(){
+irecv_device_t futurerestore::loadDeviceInfo(){
     if (!_client->device || !_client->device->product_type){
         
         int mode = getDeviceMode(true);
@@ -1075,36 +1095,19 @@ const char *futurerestore::getDeviceModelNoCopy(){
         _client->device = get_irecv_device(_client);
         if (_client->device == NULL)
             reterror(-2,"ERROR: Unable to discover device model\n");
+
+        info("Found device %s %s\n", _client->device->product_type, _client->device->hardware_model);
     }
 
-    info("Found device product %s\n", _client->device->product_type);
-    
-    return _client->device->product_type;
+    return _client->device;
 }
-
-const char *futurerestore::getDeviceBoardNoCopy(){
-    if (!_client->device || !_client->device->hardware_model){
-        
-        int mode = getDeviceMode(true);
-        if (mode != MODE_NORMAL && mode != MODE_RECOVERY)
-            reterror(-20, "unexpected device mode=%d\n",mode);
-        
-        _client->device = get_irecv_device(_client);
-        if (_client->device == NULL)
-            reterror(-2,"ERROR: Unable to discover device type\n");
-    }
-
-    info("Found device board %s\n", _client->device->hardware_model);
-    
-    return _client->device->hardware_model;
-}
-
 
 char *futurerestore::getLatestManifest(){
     if (!__latestManifest){
         loadFirmwareTokens();
+        loadDeviceInfo();
 
-        const char *device = getDeviceModelNoCopy();
+        const char *device = _client->device->product_type;
         t_iosVersion versVals;
         memset(&versVals, 0, sizeof(versVals));
         

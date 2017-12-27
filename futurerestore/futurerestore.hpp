@@ -88,8 +88,7 @@ public:
     const char *nonceMatchesIM4Ms();
 
     void loadFirmwareTokens();
-    const char *getDeviceModelNoCopy();
-    const char *getDeviceBoardNoCopy();
+    irecv_device_t loadDeviceInfo();
     char *getLatestManifest();
     char *getLatestFirmwareUrl();
     void loadLatestBaseband();
@@ -110,6 +109,7 @@ public:
     
     
     uint64_t getBasebandGoldCertIDFromDevice();
+    size_t getBBSNumSizeFromDevice();
     
     int doRestore(const char *ipsw);
     int doJustBoot(const char *ipsw, std::string bootargs = "");

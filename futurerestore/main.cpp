@@ -6,6 +6,10 @@
 //  Copyright © 2016 tihmstar. All rights reserved.
 //
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <iostream>
 #include <getopt.h>
 #include <string.h>
@@ -23,7 +27,6 @@
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
 #endif
-#include "config.h"
 
 #define safeFree(buf) if (buf) free(buf), buf = NULL
 #define safePlistFree(buf) if (buf) plist_free(buf), buf = NULL
@@ -75,6 +78,7 @@ void cmd_help(){
     printf("      --no-baseband\t\tskip checks and don't flash baseband.\n");
     printf("                   \t\tWARNING: only use this for device without baseband (eg iPod or some wifi only iPads)\n");
     printf("\n");
+    printf("Homepage: <" PACKAGE_URL ">\n");
 }
 
 using namespace std;
@@ -221,8 +225,9 @@ int main(int argc, const char * argv[]) {
         if (bootargs){
             
         }else{
-            devVals.deviceModel = (char*)client.getDeviceModelNoCopy();
-            devVals.deviceBoard = (char*)client.getDeviceBoardNoCopy();
+            irecv_device_t device = client.loadDeviceInfo();
+            devVals.deviceModel = const_cast<char *>(device->product_type);
+            devVals.deviceBoard = const_cast<char *>(device->hardware_model);
             
             if (flags & FLAG_LATEST_SEP){
                 info("user specified to use latest signed sep\n");
@@ -259,8 +264,11 @@ int main(int argc, const char * argv[]) {
                 }
                 
                 versVals.basebandMode = kBasebandModeOnlyBaseband;
-                if (!(devVals.bbgcid = client.getBasebandGoldCertIDFromDevice())){
-                    printf("[WARNING] using tsschecker's fallback to get BasebandGoldCertID. This might result in invalid baseband signing status information\n");
+                if (!(devVals.bbgcid = client.getBasebandGoldCertIDFromDevice())) {
+                    printf("[WARNING] Using tsschecker's fallback BasebandGoldCertID. This might result in invalid baseband signing status information\n");
+                }
+                if (!(devVals.bbsnumSize = client.getBBSNumSizeFromDevice())) {
+                    printf("[WARNING] Using tsschecker's fallback BasebandSerialNumber size. This might result in invalid baseband signing status information\n");
                 }
                 if (!(isBasebandSigned = isManifestSignedForDevice(client.basebandManifestPath(), &devVals, &versVals))) {
                     reterror(-3,"baseband firmware isn't signed\n");

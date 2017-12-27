@@ -1,5 +1,5 @@
 AC_PREREQ(2.64)
-AC_INIT([futurerestore], [1.0], [http://url.me/issues],, [http://url.me])
+AC_INIT([futurerestore], [1.0], [https://github.com/encounter/futurerestore/issues],, [https://github.com/encounter/futurerestore])
 
 AC_CANONICAL_SYSTEM
 
@@ -28,10 +28,10 @@ AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_SUBDIRS(external/idevicerestore external/img4tool external/tsschecker)
 AC_CONFIG_SRCDIR([futurerestore])
 
+AC_SEARCH_LIBS([pthread_create], [pthread])
 PKG_CHECK_MODULES(libplist, libplist >= 1.12)
 PKG_CHECK_MODULES(libzip, libzip >= 0.10)
 PKG_CHECK_MODULES(libimobiledevice, libimobiledevice-1.0 >= 1.2.1)
-PKG_CHECK_MODULES(libfragmentzip, libfragmentzip >= 1.0)
 PKG_CHECK_MODULES(libirecovery, libirecovery >= 0.2.0)
 
 AC_PROG_CC
