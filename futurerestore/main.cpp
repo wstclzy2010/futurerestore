@@ -71,7 +71,7 @@ void cmd_help(){
     printf("      --latest-baseband\t\tUse latest signed baseband instead of manually specifying one (may cause bad restore)\n");
     printf("      --no-baseband\t\tSkip checks and don't flash baseband\n");
     printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod or some wifi only iPads)\n");
-    printf("      --exit-recovery\t\tExit recovery mode and quit");
+    printf("      --exit-recovery\t\tExit recovery mode and quit\n");
 #ifdef HAVE_LIBIPATCHER
     printf("      --use-pwndfu\t\tuse this for restoring devices with odysseus method. Device needs to be in kDFU mode already\n");
     printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set bootargs\n");

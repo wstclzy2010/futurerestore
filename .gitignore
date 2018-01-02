@@ -23,6 +23,7 @@ futurerestore/*.o
 futurerestore/*.la
 futurerestore/*.lo
 futurerestore/futurerestore
+futurerestore/futurerestore.exe
 futurerestore/.libs
 futurerestore/.deps
 stamp-h1

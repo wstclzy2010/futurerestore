@@ -43,10 +43,10 @@ To manually specify baseband/SEP:
   -m, --sep-manifest PATH	BuildManifest for requesting sep ticket
 ```
 
-# Compile Dependencies
-*  ## Bundled Libs
-  Those don't need to be installed manually
-  * jsmn
+# Dependencies
+* ## Runtime
+  * On macOS and Windows, futurerestore requires no runtime dependencies, the following are only for compiling.  
+  * On Linux, [usbmuxd](https://github.com/libimobiledevice/usbmuxd) is required at runtime.
 * ## External Libs
   Make sure these are installed
   * libzip
@@ -54,10 +54,13 @@ To manually specify baseband/SEP:
   * openssl (or CommonCrypto on OSX)
   * [libplist](https://github.com/libimobiledevice/libplist)
 * ## Submodules
-  Make sure these projects compile on your system (install it's dependencies)
+  Make sure these projects compile on your system (install their dependencies)
   * [tsschecker](https://github.com/encounter/tsschecker)
   * [img4tool](https://github.com/tihmstar/img4tool)
   * [idevicerestore](https://github.com/encounter/idevicerestore)
+
+# Building from source
+See [COMPILING.md](COMPILING.md)
 
 ---
 
