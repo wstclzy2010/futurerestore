@@ -113,9 +113,6 @@ int main(int argc, const char * argv[]) {
     long flags = 0;
     bool exitRecovery = false;
 
-    int isSepManifestSigned = 0;
-    int isBasebandSigned = 0;
-
     const char *ipsw = NULL;
     const char *basebandPath = NULL;
     const char *basebandManifestPath = NULL;
@@ -257,13 +254,12 @@ int main(int argc, const char * argv[]) {
                 if (sourceIpswPath != nullptr) {
                     client.loadSepFromIpsw(sourceIpswPath);
                 } else {
-                    client.loadSep(sepPath);
-                    client.setSepManifestPath(sepManifestPath);
+                    client.loadSep(sepPath, sepManifestPath);
                 }
             }
-            
+
             versVals.basebandMode = kBasebandModeWithoutBaseband;
-            if (!client.is32bit() && !(isSepManifestSigned = isManifestSignedForDevice(client.sepManifestPath(), &devVals, &versVals))){
+            if (!client.is32bit() && !isManifestSignedForDevice(client.sepManifestPath(), &devVals, &versVals)) {
                 reterror(-3,"sep firmware isn't signed\n");
             }
             
@@ -285,8 +281,7 @@ int main(int argc, const char * argv[]) {
                 } else if (sourceIpswPath != nullptr) {
                     client.loadBasebandFromIpsw(sourceIpswPath);
                 } else {
-                    client.setBasebandPath(basebandPath);
-                    client.setBasebandManifestPath(basebandManifestPath);
+                    client.setBasebandPath(basebandPath, basebandManifestPath);
                     printf("Did set sep+baseband path and firmware\n");
                 }
                 
@@ -297,7 +292,7 @@ int main(int argc, const char * argv[]) {
                 if (!(devVals.bbsnumSize = client.getBBSNumSizeFromDevice())) {
                     printf("[WARNING] Using tsschecker's fallback BasebandSerialNumber size. This might result in invalid baseband signing status information\n");
                 }
-                if (!(isBasebandSigned = isManifestSignedForDevice(client.basebandManifestPath(), &devVals, &versVals))) {
+                if (!isManifestSignedForDevice(client.basebandManifestPath(), &devVals, &versVals)) {
                     reterror(-3,"baseband firmware isn't signed\n");
                 }
             }
@@ -311,7 +306,7 @@ int main(int argc, const char * argv[]) {
         printf("[Error] Fail code=%d\n",err);
         goto error;
     }
-    
+
     try {
         if (bootargs)
             res = client.doJustBoot(ipsw,bootargs);
