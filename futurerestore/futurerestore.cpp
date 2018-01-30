@@ -565,7 +565,17 @@ void get_custom_component(struct idevicerestore_client_t* client, plist_t build_
 
 
 int futurerestore::doRestore(const char *ipsw){
+#undef reterror
+#define reterror(code, msg ...) { \
+    error(msg); \
+    if (canExitRecovery) { \
+        fprintf(stderr, "\nTo exit recovery mode, use --exit-recovery\n\n"); \
+    } \
+    throw int(code); \
+}
+
     int err = 0;
+    bool canExitRecovery = false;
     //some memory might not get freed if this function throws an exception, but you probably don't want to catch that anyway.
     
     struct idevicerestore_client_t* client = _client;
@@ -594,6 +604,8 @@ int futurerestore::doRestore(const char *ipsw){
         reterror(-2,"ERROR: Unable to discover device type\n");
     }
     info("Identified device as %s, %s\n", client->device->hardware_model, client->device->product_type);
+
+    canExitRecovery = true;
     
     // verify if ipsw file exists
     if (access(client->ipsw, F_OK) < 0) {
@@ -717,10 +729,12 @@ int futurerestore::doRestore(const char *ipsw){
     
     if (_basebandbuildmanifest){
         if (!(client->basebandBuildIdentity = getBuildidentityWithBoardconfig(_basebandbuildmanifest, client->device->hardware_model, _isUpdateInstall))){
-            if (!(client->basebandBuildIdentity = getBuildidentityWithBoardconfig(_basebandbuildmanifest, client->device->hardware_model, !_isUpdateInstall)))
-                reterror(-5,"ERROR: Unable to find any build identities for Baseband\n");
-            else
-                info("[WARNING] Unable to find Baseband buildidentities for restore type %s, using fallback %s\n", (_isUpdateInstall) ? "Update" : "Erase",(!_isUpdateInstall) ? "Update" : "Erase");
+            if (!(client->basebandBuildIdentity = getBuildidentityWithBoardconfig(_basebandbuildmanifest, client->device->hardware_model, !_isUpdateInstall))) {
+                reterror(-5, "ERROR: Unable to find any build identities for Baseband\n");
+            } else {
+                info("[WARNING] Unable to find Baseband buildidentities for restore type %s, using fallback %s\n",
+                     (_isUpdateInstall) ? "Update" : "Erase", (!_isUpdateInstall) ? "Update" : "Erase");
+            }
         }
             
         client->bbfwtmp = (char*)_basebandPath;
@@ -949,6 +963,7 @@ int futurerestore::doRestore(const char *ipsw){
     
     if (client->mode->index == MODE_RESTORE) {
         info("About to restore device... \n");
+        canExitRecovery = false;
         result = restore_device(client, build_identity, filesystem);
         if (result < 0) {
             reterror(-11,"ERROR: Unable to restore device\n");
@@ -964,6 +979,9 @@ error:
     if (delete_fs && filesystem) unlink(filesystem);
     if (!result && !err) info("DONE\n");
     return result ? abs(result) : err;
+
+#undef reterror
+#define reterror(code,msg ...) error(msg),throw int(code)
 }
 
 int futurerestore::doJustBoot(const char *ipsw, string bootargs){

@@ -299,6 +299,7 @@ int main(int argc, const char * argv[]) {
         }
         client.putDeviceIntoRecovery();
         if (flags & FLAG_WAIT){
+            printf("\n[WARNING] -w is ONLY for nonce collision! If you didn't intend this, remove the -w flag.\n\n");
             client.waitForNonce();
         }
     } catch (int error) {
@@ -313,7 +314,7 @@ int main(int argc, const char * argv[]) {
         else
             res = client.doRestore(ipsw);
     } catch (int error) {
-        if (error == -20) error("maybe you forgot -w ?\n");
+        if (error == -20) error("Set your APNonce before restoring!\n");
         err = error;
     }
     cout << "Done: restoring "<< (!res ? "succeeded" : "failed")<<"." <<endl;
