@@ -44,7 +44,7 @@ static struct option longopts[] = {
     { "latest-sep",         no_argument,            NULL, '0' },
     { "latest-baseband",    no_argument,            NULL, '1' },
     { "no-baseband",        no_argument,            NULL, '2' },
-    { "exit-recovery",      no_argument,            NULL, '3' },
+    { "exit-recovery",      no_argument,            NULL, '5' },
 #ifdef HAVE_LIBIPATCHER
     { "use-pwndfu",         no_argument,            NULL, '3' },
     { "just-boot",          optional_argument,      NULL, '4' },
@@ -167,7 +167,7 @@ int main(int argc, const char * argv[]) {
             case '2': // long option: "no-baseband";
                 flags |= FLAG_NO_BASEBAND;
                 break;
-            case '3': // long option: "exit-recovery";
+            case '5': // long option: "exit-recovery";
                 exitRecovery = true;
                 break;
 #ifdef HAVE_LIBIPATCHER
