@@ -15,5 +15,5 @@ futurerestore_CXXFLAGS = $(AM_CFLAGS)
 if WIN32
 futurerestore_LDFLAGS = -all-static -static-libgcc -static-libstdc++ $(AM_LDFLAGS)
 endif
-futurerestore_LDADD = $(top_srcdir)/external/idevicerestore/src/libidevicerestore.la $(top_srcdir)/external/img4tool/img4tool/libimg4tool.la $(top_srcdir)/external/tsschecker/tsschecker/libtsschecker.la $(top_srcdir)/external/tsschecker/tsschecker/libjssy.a $(top_srcdir)/external/tsschecker/external/libfragmentzip/libfragmentzip/libfragmentzip.la $(AM_LDFLAGS)
+futurerestore_LDADD = $(top_srcdir)/external/idevicerestore/src/libidevicerestore.la $(top_srcdir)/external/img4tool/img4tool/libimg4tool.la $(top_srcdir)/external/tsschecker/tsschecker/libtsschecker.la $(top_srcdir)/external/tsschecker/tsschecker/libjssy.a $(AM_LDFLAGS)
 futurerestore_SOURCES = futurerestore.cpp main.cpp
