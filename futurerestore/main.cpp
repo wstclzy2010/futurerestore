@@ -60,20 +60,20 @@ static struct option longopts[] = {
 
 void cmd_help(){
     printf("Usage: futurerestore [OPTIONS] /path/to/ipsw\n\n");
+    printf("Tool, which supported latest restore unsigned firmware methods for all iOS devices.\n\n");
     printf("Options:\n\n");
-
     printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
     printf("  -u, --update\t\t\tUpdate instead of erase install (requires appropriate APTicket)\n");
-    printf("  -w, --wait\t\t\tKeep rebooting until nonce matches APTicket (nonce collision, unreliable)\n");
+    printf("  -w, --wait\t\t\tKeep rebooting until ApNonce matches APTicket (ApNonce collision, unreliable)\n");
     printf("  -d, --debug\t\t\tVerbose debug output (useful for error logs)\n");
     printf("      --latest-sep\t\tUse latest signed sep instead of manually specifying one (may cause bad restore)\n");
     printf("      --latest-baseband\t\tUse latest signed baseband instead of manually specifying one (may cause bad restore)\n");
     printf("      --no-baseband\t\tSkip checks and don't flash baseband\n");
-    printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod or some wifi only iPads)\n");
+    printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod touch or some Wi-Fi only iPads)\n");
     printf("      --exit-recovery\t\tExit recovery mode and quit\n");
 #ifdef HAVE_LIBIPATCHER
     printf("      --use-pwndfu\t\tuse this for restoring devices with odysseus method. Device needs to be in kDFU mode already\n");
-    printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set bootargs\n");
+    printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set boot-args\n");
 #endif
     printf("\nTo extract baseband/SEP automatically from IPSW:\n\n");
     printf("  -i, --source-ipsw PATH\tSource IPSW to extract baseband/SEP from\n");
