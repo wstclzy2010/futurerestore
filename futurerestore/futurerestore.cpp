@@ -27,10 +27,8 @@ extern "C"{
 #include "locking.h"
 #include "restore.h"
 #include "tsschecker.h"
-#include "all_tsschecker.h"
 #include <libirecovery.h>
 }
-
 
 //(re)define __mkdir
 #ifdef __mkdir
