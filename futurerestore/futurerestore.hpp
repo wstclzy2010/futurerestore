@@ -126,7 +126,4 @@ public:
 
 };
 
-
-
-
 #endif /* futurerestore_hpp */
