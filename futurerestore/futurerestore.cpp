@@ -260,8 +260,6 @@ const char *futurerestore::nonceMatchesIM4Ms(){
     return NULL;
 }
 
-
-
 void futurerestore::waitForNonce(vector<const char *>nonces, size_t nonceSize){
     if (!_didInit) reterror(-1, "did not init\n");
     setAutoboot(false);
