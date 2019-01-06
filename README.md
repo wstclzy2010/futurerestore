@@ -11,7 +11,7 @@ Windows version is supported, but I will not compile it.
   * Prometheus 64-bit devices (generator and APNonce collision mode);
   * Odysseus for 32-bit devices;
   * Re-restoring 32-bit devices to iOS 9 with @alitek123's no-nonce method (alternative — [idevicererestore](https://github.com/s0uthwest/idevicererestore)).
-* Allows restoring any nonmatching signed iOS/SEP/Baseband.
+* Allows restoring any non-matching signed iOS/SEP/Baseband.
 
 # Dependencies
 * ## Runtime
@@ -20,8 +20,7 @@ Windows version is supported, but I will not compile it.
 * ## External Libs
   Make sure these are installed
   * [libzip](https://github.com/nih-at/libzip);
-  * [libcurl](https://github.com/curl/curl);
-  * [openssl](https://github.com/openssl/openssl) (or CommonCrypto on macOS/OS X);
+  * [libfragmentzip](https://github.com/encounter/libfragmentzip);
   * [libplist](https://github.com/libimobiledevice/libplist);
   * [libirecovery](https://github.com/s0uthwest/libirecovery);
   * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice)
