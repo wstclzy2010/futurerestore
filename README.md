@@ -3,6 +3,8 @@ _futurerestore is a hacked up idevicerestore wrapper, which allows manually spec
 
 Only use if you are sure what you're doing.
 ---
+Windows version is supported, but I will not compile it.
+---
 
 ## Features
 * Supports the following downgrade methods
