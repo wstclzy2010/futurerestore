@@ -13,7 +13,7 @@ Only use if you are sure what you're doing.
 
 # Dependencies
 * ## Runtime
-  * On macOS and Windows, futurerestore requires no runtime dependencies, the following are only for compiling.  
+  * On macOS, futurerestore requires no runtime dependencies, the following are only for compiling.  
   * On Linux, [usbmuxd](https://github.com/libimobiledevice/usbmuxd) is required at runtime.
 * ## External Libs
   Make sure these are installed
