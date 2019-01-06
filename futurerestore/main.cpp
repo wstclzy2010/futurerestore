@@ -59,7 +59,7 @@ static struct option longopts[] = {
 #define FLAG_IS_PWN_DFU         1 << 5
 
 void cmd_help(){
-    printf("Usage: futurerestore [OPTIONS] /path/to/ipsw\n\n");
+    printf("Usage: futurerestore [OPTIONS] /path/to/ipsw\n");
     printf("Tool, which supported latest restore unsigned firmware methods for all iOS devices.\n\n");
     printf("Options:\n\n");
     printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
@@ -83,7 +83,8 @@ void cmd_help(){
     printf("  -s, --sep PATH\t\tSEP to be flashed\n");
     printf("  -m, --sep-manifest PATH\tBuildManifest for requesting sep ticket\n");
     printf("\n");
-    printf("Homepage: <" PACKAGE_URL ">\n");
+    printf("Homepage: https://github.com/s0uthwest/futurerestore\n");
+    printf("Original project: https://github.com/tihmstar/futurerestore\n");
 }
 
 using namespace std;
