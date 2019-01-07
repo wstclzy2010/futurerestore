@@ -3,8 +3,8 @@ _futurerestore is a hacked up idevicerestore wrapper, which allows manually spec
 
 Only use if you are sure what you're doing.
 ---
-Windows version is supported, but I will not compile it.
----
+Latest release available [here](https://github.com/s0uthwest/futurerestore/releases) for macOS & Linux.
+__Windows version is supported, but I will not compile it.__
 
 ## Features
 * Supports the following downgrade methods
@@ -31,8 +31,14 @@ Windows version is supported, but I will not compile it.
   * [img4tool](https://github.com/s0uthwest/img4tool);
   * [idevicerestore](https://github.com/s0uthwest/idevicerestore)
   
-## Some about curl for ubuntu
-Follow [this guide](https://dev.to/jake/using-libcurl3-and-libcurl4-on-ubuntu-1804-bionic-184g) to use tsschecker on Ubuntu 18.04 (Bionic) as it requires libcurl3 which cannot coexist with libcurl4 on this OS.
+## Report an issue
+You can do it [here](https://github.com/s0uthwest/futurerestore/issues).
+  
+## Compiling
+Simple use  `bash autogen.sh && make` or use Xcode project.
+  
+### Some about curl for ubuntu
+Follow [this guide](https://dev.to/jake/using-libcurl3-and-libcurl4-on-ubuntu-1804-bionic-184g) to use tsschecker on Ubuntu 18.04 (Bionic) as it requires libcurl3 which cannot co-exist with libcurl4 on this OS.
 
 ---
 
@@ -83,10 +89,10 @@ This CLI tool available at [pwn20wnd](https://github.com/pwn20wndstuff)'s [Cydia
   * reactivate jailbreak with [Luca Todesco](https://github.com/kpwn)'s [JailbreakMe](https://jbme.qwertyoruiop.com/)
   * done
   
-#### Method 2 (if jailbroken on iOS 8.0-8.1 with [Pangu](https://en.8.pangu.io))
+#### Method 2 (if jailbroken on iOS 8.0-8.1 with [Pangu8](https://en.8.pangu.io))
   * install this [untether DEB-file](http://apt.saurik.com/beta/pangu8-tfp0/io.pangu.xuanyuansword8_0.5_iphoneos-arm.deb) with included tfp0 patch
   
-#### Method 3 (if jailbroken on iOS 7.x with [Pangu](https://en.7.pangu.io))
+#### Method 3 (if jailbroken on iOS 7.x with [Pangu7](https://en.7.pangu.io))
   * install this [untether DEB-file](http://apt.saurik.com/debs/io.pangu.axe7_0.3_iphoneos-arm.deb) with included tfp0 patch
 
 #### Method 4
@@ -94,14 +100,14 @@ This CLI tool available at [pwn20wnd](https://github.com/pwn20wndstuff)'s [Cydia
 
 ---
 
-## 2) Prometheus (64-bit device) - APNonce collision method (Recovery)
+## 2) Prometheus (64-bit device) - ApNonce collision method (Recovery)
 
 ### Requirements
 - __iPhone 5s, iPad Air, iPad mini 2 on iOS 9.1 - 10.2__
 - No Jailbreak required
-- SHSH files with customly chosen APNonce
-- The shsh file needs to have one of the APNnces, which the device generates a lot
-- __collisioned APNonces available in file 'nonces.txt'__
+- SHSH files with customly chosen ApNonce
+- The shsh file needs to have one of the ApNonces, which the device generates a lot
+- __collisioned ApNonces available in file 'nonces.txt'__
 
 ### Info
 You can downgrade if the destination iOS is compatible with the latest signed SEP. You also need to have special shsh files. If you don't know what this is, you probably can **NOT** use this method!
@@ -114,15 +120,15 @@ one to speed up the process: `futurerestore -w -t t1.shsh -t t2.shsh -t t3.shsh 
 
 ---
 
-## 3) Prometheus (64-bit device) - APNonce collision method (DFU)
+## 3) Prometheus (64-bit device) - ApNonce collision method (DFU)
 
 ### Requirements
 - __Devices for A7 chip (iPhone 5s, iPad Air, iPad mini 2) and some devices with A8 chip (iPod touch [6th gen]) on all iOS firmwares__
 - No Jailbreak required
-- SHSH files with customly chosen APNonce
-- The shsh file needs to have one of the APNnces, which the device generates a lot
+- SHSH files with customly chosen ApNonce
+- The shsh file needs to have one of the ApNonces, which the device generates a lot
 - __[img4tool](https://github.com/s0uthwest/img4tool) can't be used for Windows [problem with signing iBSS/iBEC], now it's TO-DO__
-- __collisioned APNonces available in file 'nonces.txt' in [TSSChecker](https://github.com/s0uthwest/TSSChecker).__
+- __collisioned ApNonces available in file 'nonces.txt' in [TSSChecker](https://github.com/s0uthwest/TSSChecker).__
 
 ### Info
 You can downgrade if the destination iOS is compatible with the latest signed SEP. You also need to have special shsh files. If you don't know what this is, you probably can **NOT** use this method!
@@ -131,15 +137,15 @@ You can downgrade if the destination iOS is compatible with the latest signed SE
 1. Connect your device in DFU mode
 2. Use [irecovery](https://github.com/libimobiledevice/irecovery) for check nonce booted with DFU
 3. Extract iBSS/iBEC from target firmware for downgrade (unsigned)
-4. Check DFU APNonces with [irecovery](https://github.com/libimobiledevice/irecovery) with DFU booting.
-    You can't automatically collision DFU APNonces.
+4. Check DFU ApNonces with [irecovery](https://github.com/libimobiledevice/irecovery) with DFU booting.
+    You can't automatically collision DFU ApNonces.
     
-    __If APNonce is not collisioned, "use hands" for DFU booting.__
+    __If ApNonce is not collisioned, "use hands" for DFU booting.__
     
-    __If APNonce is successfully coliisioned, use this SHSH2 for sign iBSS/iBEC.__
-5. Use [img4tool](https://github.com/s0uthwest/img4tool) for sign iBSS:
+    __If ApNonce is successfully coliisioned, use this SHSH2 for sign iBSS/iBEC.__
+5. Use [img4tool](https://github.com/s0uthwest/img4tool/releases) for sign iBSS:
    `img4tool -s ticket.shsh -c iBSS.signed -p <original_iBSS>`
-6. Use [img4tool](https://github.com/s0uthwest/img4tool) for sign iBEC:
+6. Use [img4tool](https://github.com/s0uthwest/img4tool/releases) for sign iBEC:
    `img4tool -s ticket.shsh -c iBEC.signed -p <original_iBEC>`
 7. So, after signing we can boot into Recovery with [irecovery](https://github.com/libimobiledevice/irecovery):
 
@@ -180,7 +186,7 @@ If you have a jailbroken 32-bit device you can downgrade to any iOS you have blo
 ## 5) iOS 9 Re-restore bug (found by [@alitek123](https://twitter.com/alitek123), 32-bit devices only):
 ### Requirements
 - No Jailbreak required
-- __SHSH files without a APNonce (noNonce APTickets)__
+- __SHSH files without a ApNonce (noNonce APTickets)__
 
 ### Info
 If you have shsh files for iOS9 which do not contain an APNonce, you can restore to that firmware.
@@ -188,3 +194,10 @@ If you have shsh files for iOS9 which do not contain an APNonce, you can restore
 ### How to use
 1. Connect your device in DFU mode
 2. On the computer run `futurerestore -t ticket.shsh --latest-baseband ios9.ipsw`
+
+## Credits
+Creator of [original project](https://github.com/tihmstar/futurerestore) - [tihmstar](https://github.com/tihmstar).
+
+
+ReadMe updated on:
+        2019-01-06

@@ -23,6 +23,9 @@
 		56520BFA21B1BB14005BD3F7 /* jssy.c in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF221B1BB13005BD3F7 /* jssy.c */; };
 		56520BFB21B1BB14005BD3F7 /* cmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF321B1BB13005BD3F7 /* cmain.c */; };
 		56520BFC21B1BB14005BD3F7 /* jssy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF621B1BB13005BD3F7 /* jssy.cpp */; };
+		56DA634021E3462300821A21 /* ptr_smart.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF721B1BB13005BD3F7 /* ptr_smart.hpp */; };
+		56DA634121E3462600821A21 /* jssy.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF421B1BB13005BD3F7 /* jssy.hpp */; };
+		56DA634221E3463900821A21 /* helper.h in Sources */ = {isa = PBXBuildFile; fileRef = 56520BF521B1BB13005BD3F7 /* helper.h */; };
 		56EF4C0921B1A8570056D405 /* libipatcher.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EF4C0821B1A8570056D405 /* libipatcher.0.dylib */; };
 		56EF4C0D21B1A8750056D405 /* libusbmuxd.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EF4C0C21B1A8750056D405 /* libusbmuxd.4.dylib */; };
 		56EF4C0F21B1A8850056D405 /* libfragmentzip.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 56EF4C0E21B1A8850056D405 /* libfragmentzip.0.dylib */; };
@@ -402,13 +405,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56DA634021E3462300821A21 /* ptr_smart.hpp in Sources */,
 				56520BFB21B1BB14005BD3F7 /* cmain.c in Sources */,
 				8799B0C11D89DB38002F4D5F /* fls.c in Sources */,
 				8799B0B41D89DAF6002F4D5F /* tss.c in Sources */,
 				8799B0C01D89DB38002F4D5F /* fdr.c in Sources */,
 				8799B0BC1D89DB27002F4D5F /* ipsw.c in Sources */,
+				56DA634221E3463900821A21 /* helper.h in Sources */,
 				8799B0CC1D89F7B9002F4D5F /* download.c in Sources */,
 				8799B0B91D89DB0D002F4D5F /* img3.c in Sources */,
+				56DA634121E3462600821A21 /* jssy.hpp in Sources */,
 				8799B0B51D89DAFF002F4D5F /* common.c in Sources */,
 				8799B0C41D89DB55002F4D5F /* mbn.c in Sources */,
 				8799B0B81D89DAFF002F4D5F /* recovery.c in Sources */,

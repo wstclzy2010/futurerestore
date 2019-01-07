@@ -71,7 +71,6 @@ class futurerestore {
     //methods
     void enterPwnRecovery(plist_t build_identity, std::string bootargs = "");
     
-    
 public:
     futurerestore(bool isUpdateInstall = false, bool isPwnDfu = false);
     bool init();
