@@ -13,6 +13,7 @@ __Windows version is supported, but I will not compile it.__
   * Re-restoring 32-bit devices to iOS 9 with @alitek123's no-nonce method (alternative — [idevicererestore](https://github.com/s0uthwest/idevicererestore)).
 * Allows restoring any non-matching signed iOS/SEP/Baseband.
 
+__NOT recommended 'u' parameter, if you update from jailbroken firmware!__
 # Dependencies
 * ## Runtime
   * On macOS, futurerestore requires no runtime dependencies, the following are only for compiling.  

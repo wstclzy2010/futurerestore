@@ -64,6 +64,7 @@ void cmd_help(){
     printf("Options:\n\n");
     printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
     printf("  -u, --update\t\t\tUpdate instead of erase install (requires appropriate APTicket)\n");
+    printf("              \t\t\tNOT recommended this parameter, if you update from jailbroken firmware\n");
     printf("  -w, --wait\t\t\tKeep rebooting until ApNonce matches APTicket (ApNonce collision, unreliable)\n");
     printf("  -d, --debug\t\t\tVerbose debug output (useful for error logs)\n");
     printf("      --latest-sep\t\tUse latest signed sep instead of manually specifying one (may cause bad restore)\n");
@@ -72,7 +73,7 @@ void cmd_help(){
     printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod touch or some Wi-Fi only iPads)\n");
     printf("      --exit-recovery\t\tExit recovery mode and quit\n");
 #ifdef HAVE_LIBIPATCHER
-    printf("      --use-pwndfu\t\tuse this for restoring devices with odysseus method. Device needs to be in kDFU mode already\n");
+    printf("      --use-pwndfu\t\tuse this for restoring devices with Odysseus method. Device needs to be in kDFU mode already\n");
     printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set boot-args\n");
 #endif
     printf("\nTo extract baseband/SEP automatically from IPSW:\n\n");
@@ -130,7 +131,6 @@ int main(int argc, const char * argv[]) {
         cmd_help();
         return -1;
     }
-
 
     while ((opt = getopt_long(argc, (char* const *)argv, "t:i:b:p:s:m:wud0123", longopts, &optindex)) > 0) {
         switch (opt) {
@@ -192,8 +192,8 @@ int main(int argc, const char * argv[]) {
         argv += optind;
 
         ipsw = argv[0];
-    }else if (argc == optind && flags & FLAG_WAIT) {
-        info("User requested to only wait for APNonce to match, but not actually restoring\n");
+    } else if (argc == optind && flags & FLAG_WAIT) {
+        info("User requested to only wait for ApNonce to match, but not actually restoring\n");
     } else if (exitRecovery) {
         info("Exiting recovery mode\n");
     } else {
@@ -319,7 +319,6 @@ int main(int argc, const char * argv[]) {
     }
     cout << "Done: restoring "<< (!res ? "succeeded" : "failed")<<"." <<endl;
 
-    
 error:
     if (err) cout << "Failed with errorcode="<<err << endl;
     return err;
