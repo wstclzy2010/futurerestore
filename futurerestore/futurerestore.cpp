@@ -559,7 +559,6 @@ void get_custom_component(struct idevicerestore_client_t* client, plist_t build_
 #endif
 }
 
-
 int futurerestore::doRestore(const char *ipsw){
 #undef reterror
 #define reterror(code, msg ...) { \
@@ -675,8 +674,7 @@ int futurerestore::doRestore(const char *ipsw){
             printf("Verified ECID in APTicket matches device ECID\n");
         
         plist_t ticketIdentity = getBuildIdentityForIM4M(im4m, buildmanifest);
-        //TODO: make this nicer!
-        //for now a simple pointercompare should be fine, because both plist_t should point into the same buildidentity inside the buildmanifest
+        //TO-DO: make this nicer! For now a simple pointercompare should be fine, because both plist_t should point into the same buildidentity inside the buildmanifest
         if (ticketIdentity != build_identity ){
             error("BuildIdentity selected for restore does not match APTicket\n\n");
             printf("BuildIdentity selected for restore:\n");
@@ -711,7 +709,6 @@ int futurerestore::doRestore(const char *ipsw){
         
         plist_get_data_val(digest, &manifestDigest, &manifestDigestSize);
         
-        
         if (tickethashSize == manifestDigestSize && memcmp(tickethash, manifestDigest, tickethashSize) == 0){
             printf("Verified APTicket to be valid for this restore\n");
             free(manifestDigest);
@@ -721,7 +718,6 @@ int futurerestore::doRestore(const char *ipsw){
             reterror(-44, "APTicket can't be used for this restore\n");
         }
     }
-    
     
     if (_basebandbuildmanifest){
         if (!(client->basebandBuildIdentity = getBuildidentityWithBoardconfig(_basebandbuildmanifest, client->device->hardware_model, _isUpdateInstall))){
@@ -776,7 +772,6 @@ int futurerestore::doRestore(const char *ipsw){
             reterror(-6, "unexpected device mode\n");
         enterPwnRecovery(build_identity);
     }
-    
     
     // Get filesystem name from build identity
     char* fsname = NULL;
@@ -898,8 +893,6 @@ int futurerestore::doRestore(const char *ipsw){
         }
     }
     
-    
-    
     if (_enterPwnRecoveryRequested){ //if pwnrecovery send all components decrypted, unless we're dealing with iOS 10
         if (strncmp(client->version, "10.", 3))
             client->recovery_custom_component_function = get_custom_component;
@@ -914,7 +907,6 @@ int futurerestore::doRestore(const char *ipsw){
         /* FIXME: Probably better to detect if the device is back then */
         sleep(7);
     }
-        
    
     for (int i=0;getDeviceMode(true) != MODE_RECOVERY && i<40; i++) putchar('.'),usleep(USEC_PER_SEC*0.5);
     putchar('\n');
@@ -945,16 +937,13 @@ int futurerestore::doRestore(const char *ipsw){
         recovery_client_free(client);
     }
     
-    
     if (_client->image4supported && get_tss_response(client, sep_build_identity, &client->septss) < 0) {
         reterror(-11,"ERROR: Unable to get SHSH blobs for SEP\n");
     }
     
     
-    
     if (_client->image4supported && (!_client->sepfwdatasize || !_client->sepfwdata))
         reterror(-55, "SEP not loaded, refusing to continue");
-    
     
     
     if (client->mode->index == MODE_RESTORE) {
@@ -967,7 +956,6 @@ int futurerestore::doRestore(const char *ipsw){
     }
     
     info("Cleaning up...\n");
-    
     
 error:
     safeFree(client->sepfwdata);
