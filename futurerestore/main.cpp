@@ -72,10 +72,12 @@ void cmd_help(){
     printf("      --no-baseband\t\tSkip checks and don't flash baseband\n");
     printf("                   \t\tWARNING: only use this for device without a baseband (eg. iPod touch or some Wi-Fi only iPads)\n");
     printf("      --exit-recovery\t\tExit recovery mode and quit\n");
+    
 #ifdef HAVE_LIBIPATCHER
     printf("      --use-pwndfu\t\tuse this for restoring devices with Odysseus method. Device needs to be in kDFU mode already\n");
     printf("      --just-boot=\"-v\"\t\tuse this to tethered boot the device from kDFU mode. You can optionally set boot-args\n");
 #endif
+    
     printf("\nTo extract baseband/SEP automatically from IPSW:\n\n");
     printf("  -i, --source-ipsw PATH\tSource IPSW to extract baseband/SEP from\n");
     printf("\nTo manually specify baseband/SEP:\n\n");
