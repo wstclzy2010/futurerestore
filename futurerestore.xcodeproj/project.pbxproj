@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,7 +11,6 @@
 		5604B7BB219B35F8004C22EE /* libirecovery.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7BA219B35F8004C22EE /* libirecovery.2.dylib */; };
 		5604B7BD219B3602004C22EE /* liblzfse.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7BC219B3602004C22EE /* liblzfse.dylib */; };
 		5604B7BF219B3611004C22EE /* libzip.5.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7BE219B3610004C22EE /* libzip.5.0.dylib */; };
-		5604B7C1219B3619004C22EE /* libz.1.2.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7C0219B3619004C22EE /* libz.1.2.11.dylib */; };
 		5604B7C3219B3626004C22EE /* libplist.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7C2219B3626004C22EE /* libplist.3.dylib */; };
 		5604B7C5219B362E004C22EE /* libimobiledevice.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7C4219B362E004C22EE /* libimobiledevice.6.dylib */; };
 		5604B7C7219B3630004C22EE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5604B7C6219B3630004C22EE /* libz.tbd */; };
@@ -73,11 +72,11 @@
 		5604B7BA219B35F8004C22EE /* libirecovery.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libirecovery.2.dylib; path = ../../../../../usr/local/lib/libirecovery.2.dylib; sourceTree = "<group>"; };
 		5604B7BC219B3602004C22EE /* liblzfse.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzfse.dylib; path = ../../../../../usr/local/lib/liblzfse.dylib; sourceTree = "<group>"; };
 		5604B7BE219B3610004C22EE /* libzip.5.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzip.5.0.dylib; path = ../../../../../usr/local/lib/libzip.5.0.dylib; sourceTree = "<group>"; };
-		5604B7C0219B3619004C22EE /* libz.1.2.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.11.dylib; path = ../../../../../usr/local/lib/libz.1.2.11.dylib; sourceTree = "<group>"; };
 		5604B7C2219B3626004C22EE /* libplist.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libplist.3.dylib; path = ../../../../../usr/local/lib/libplist.3.dylib; sourceTree = "<group>"; };
 		5604B7C4219B362E004C22EE /* libimobiledevice.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libimobiledevice.6.dylib; path = ../../../../../usr/local/lib/libimobiledevice.6.dylib; sourceTree = "<group>"; };
 		5604B7C6219B3630004C22EE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		5604B7C8219B3632004C22EE /* libcurl.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcurl.tbd; path = usr/lib/libcurl.tbd; sourceTree = SDKROOT; };
+		56163B0B21E514B00069A0B0 /* debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = debug.h; sourceTree = "<group>"; };
 		563DA64221BBE40700844624 /* all.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = all.h; sourceTree = "<group>"; };
 		563DA64321BBE41C00844624 /* all.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = all.h; path = external/tsschecker/tsschecker/all.h; sourceTree = SOURCE_ROOT; };
 		563DA64421BBE44900844624 /* libcrypto.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.3.dylib; path = ../../../../../usr/local/lib/libcrypto.3.dylib; sourceTree = "<group>"; };
@@ -162,7 +161,6 @@
 				5604B7C3219B3626004C22EE /* libplist.3.dylib in Frameworks */,
 				5604B7C7219B3630004C22EE /* libz.tbd in Frameworks */,
 				5604B7BB219B35F8004C22EE /* libirecovery.2.dylib in Frameworks */,
-				5604B7C1219B3619004C22EE /* libz.1.2.11.dylib in Frameworks */,
 				563DA64521BBE44900844624 /* libcrypto.3.dylib in Frameworks */,
 				5604B7BF219B3611004C22EE /* libzip.5.0.dylib in Frameworks */,
 				5604B7C9219B3632004C22EE /* libcurl.tbd in Frameworks */,
@@ -296,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				563DA64221BBE40700844624 /* all.h */,
+				56163B0B21E514B00069A0B0 /* debug.h */,
 				878587991D89D2BA008689F0 /* download.h */,
 				878587981D89D2BA008689F0 /* download.c */,
 				878587A01D89D2BA008689F0 /* tsschecker.h */,
@@ -311,7 +310,6 @@
 				5604B7C8219B3632004C22EE /* libcurl.tbd */,
 				5604B7C6219B3630004C22EE /* libz.tbd */,
 				5604B7BA219B35F8004C22EE /* libirecovery.2.dylib */,
-				5604B7C0219B3619004C22EE /* libz.1.2.11.dylib */,
 				5604B7B8219B35EE004C22EE /* libpartialzip-1.0.0.dylib */,
 				5604B7C4219B362E004C22EE /* libimobiledevice.6.dylib */,
 				5604B7BC219B3602004C22EE /* liblzfse.dylib */,
@@ -364,7 +362,7 @@
 				};
 			};
 			buildConfigurationList = 8785873E1D89CFDC008689F0 /* Build configuration list for PBXProject "futurerestore" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
