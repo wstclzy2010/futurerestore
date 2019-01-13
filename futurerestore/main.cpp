@@ -17,9 +17,11 @@
 #include <vector>
 #include "futurerestore.hpp"
 #include "tsschecker.h"
+
 #ifdef HAVE_LIBIPATCHER
 #include <libipatcher/libipatcher.hpp>
 #endif
+
 #ifdef WIN32
 #include <windows.h>
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
@@ -64,7 +66,7 @@ void cmd_help(){
     printf("Options:\n\n");
     printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
     printf("  -u, --update\t\t\tUpdate instead of erase install (requires appropriate APTicket)\n");
-    printf("              \t\t\tNOT recommended this parameter, if you update from jailbroken firmware\n");
+    printf("              \t\t\tNOT recommended to use this parameter, if you update from jailbroken firmware\n");
     printf("  -w, --wait\t\t\tKeep rebooting until ApNonce matches APTicket (ApNonce collision, unreliable)\n");
     printf("  -d, --debug\t\t\tVerbose debug output (useful for error logs)\n");
     printf("      --latest-sep\t\tUse latest signed sep instead of manually specifying one (may cause bad restore)\n");
@@ -104,6 +106,7 @@ int main(int argc, const char * argv[]) {
     int err=0;
     int res = -1;
     printf("Version: " VERSION_COMMIT_SHA_FUTURERESTORE" - " VERSION_COMMIT_COUNT_FUTURERESTORE"\n"); // versioning
+    
 #ifdef HAVE_LIBIPATCHER
     printf("%s\n",libipatcher::version().c_str());
     printf("Odysseus Support: yes\n");
