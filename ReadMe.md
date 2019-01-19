@@ -18,12 +18,15 @@ __NOT recommended 'u' parameter, if you update from jailbroken firmware!__
   * On macOS, futurerestore requires no runtime dependencies, the following are only for compiling.  
   * On Linux, [usbmuxd](https://github.com/libimobiledevice/usbmuxd) is required at runtime.
 * ## External Libs
-  Make sure these are installed
+  Required:
   * [libzip](https://github.com/nih-at/libzip);
   * [libfragmentzip](https://github.com/encounter/libfragmentzip);
   * [libplist](https://github.com/libimobiledevice/libplist);
   * [libirecovery](https://github.com/s0uthwest/libirecovery);
   * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice)
+  
+  Optional:
+  * [libipatcher](https://github.com/s0uthwest/libipatcher)
 * ## Submodules
   Make sure these projects compile on your system (install their dependencies)
   * [jssy](https://github.com/tihmstar/jssy);
