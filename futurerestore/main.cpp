@@ -86,8 +86,7 @@ void cmd_help(){
     printf("  -b, --baseband PATH\t\tBaseband to be flashed\n");
     printf("  -p, --baseband-manifest PATH\tBuildManifest for requesting baseband ticket\n");
     printf("  -s, --sep PATH\t\tSEP to be flashed\n");
-    printf("  -m, --sep-manifest PATH\tBuildManifest for requesting sep ticket\n");
-    printf("\n");
+    printf("  -m, --sep-manifest PATH\tBuildManifest for requesting sep ticket\n\n");
     printf("Homepage: https://github.com/s0uthwest/futurerestore\n");
     printf("Original project: https://github.com/tihmstar/futurerestore\n");
 }
