@@ -26,7 +26,6 @@ __NOT recommended 'u' parameter, if you update from jailbroken firmware!__
   * [libplist](https://github.com/libimobiledevice/libplist);
   * [libirecovery](https://github.com/s0uthwest/libirecovery);
   * [libimobiledevice](https://github.com/libimobiledevice/libimobiledevice);
-  * [zlib](https://github.com/madler/zlib);
   
   Optional:
   * [libipatcher](https://github.com/s0uthwest/libipatcher);
