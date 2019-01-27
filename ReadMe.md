@@ -15,11 +15,12 @@ __Face ID devices successfully restores now!__
   * Re-restoring 32-bit devices to iOS 9 with [alitek123](https://github.com/alitek12) no-ApNonce method (alternative — [idevicererestore](https://github.com/s0uthwest/idevicererestore)).
 * Allows restoring any non-matching signed iOS/SEP/Baseband.
 
-__NOT recommended 'u' parameter, if you update from jailbroken firmware!__
+__NOT recommended to use 'u' parameter, if you update from jailbroken firmware!__
 # Dependencies
 * ## Runtime
   * On macOS, futurerestore requires no runtime dependencies, the following are only for compiling;
   * On Linux, [usbmuxd](https://github.com/libimobiledevice/usbmuxd) is required at runtime;
+
 * ## External Libs
   Required:
   * [libzip](https://github.com/nih-at/libzip);
@@ -30,6 +31,7 @@ __NOT recommended 'u' parameter, if you update from jailbroken firmware!__
   
   Optional:
   * [libipatcher](https://github.com/s0uthwest/libipatcher);
+
 * ## Submodules
   Make sure these projects compile on your system (install their dependencies)
   * [jssy](https://github.com/tihmstar/jssy);
@@ -49,7 +51,7 @@ Follow [this guide](https://dev.to/jake/using-libcurl3-and-libcurl4-on-ubuntu-18
 ---
 
 ## 0) What futurerestore can do
-**Downgrade/Upgrade/Re-restore same iOS.**
+**Downgrade/Upgrade/Re-restore _same_ iOS.**
 Whenever you read "downgrade" nowadays it means you can also upgrade and re-restore if you're on the same iOS. Basically this allows restoring an iOS and the installed iOS doesn't matter.
 
 ---
@@ -96,7 +98,7 @@ This CLI tool available at [pwn20wnd](https://github.com/pwn20wndstuff)'s [Cydia
   * install this [untether DEB-file](http://apt.saurik.com/debs/io.pangu.axe7_0.3_iphoneos-arm.deb) with included tfp0 patch
 
 #### Method 4
-  * Use [cl0ver](https://github.com/Siguza/cl0ver) for iOS 9.x
+  * Use [cl0ver](https://github.com/Siguza/cl0ver) for iOS 9.x.
 
 ---
 
@@ -152,7 +154,7 @@ You can downgrade if the destination iOS is compatible with the latest signed SE
    `irecovery -f iBSS.signed` - loading iBSS;
    
    `irecovery -f iBEC.signed` - loading iBEC;
-8. So good! On the computer run `futurerestore -w -t ticket.shsh --latest-baseband --latest-sep ios.ipsw`.
+8. So good! On the computer run `futurerestore -t ticket.shsh --latest-baseband --latest-sep -w ios.ipsw`.
 
 ---
 
@@ -197,4 +199,4 @@ Creator of [original project](https://github.com/tihmstar/futurerestore) - [tihm
 
 
 ReadMe updated on:
-        2019-01-21
+        2019-01-27
