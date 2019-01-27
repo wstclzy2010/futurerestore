@@ -7,12 +7,7 @@ aclocal.m4
 autom4te.cache
 depcomp
 compile
-config.h
-config.h.in
-config.log
-config.status
-config.guess
-config.sub
+config.*
 configure
 install-sh
 libtool
