@@ -10,7 +10,7 @@ if WIN32
 AM_CFLAGS += -DCURL_STATICLIB
 endif
 
-bin_PROGRAMS	= futurerestore
+bin_PROGRAMS = futurerestore
 futurerestore_CXXFLAGS = $(AM_CFLAGS)
 if WIN32
 futurerestore_LDFLAGS = -all-static -static-libgcc -static-libstdc++ $(AM_LDFLAGS)

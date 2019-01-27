@@ -1,9 +1,9 @@
 AC_PREREQ(2.64)
-AC_INIT([futurerestore], [1.0], [https://github.com/s0uthwest/futurerestore/issues],, [https://github.com/s0uthwest/futurerestore])
+AC_INIT([futurerestore], [1.0], [https://github.com/s0uthwest/futurerestore/issues])
 
 AC_CANONICAL_SYSTEM
-
 AC_CANONICAL_HOST
+
 # Check for operating system
 AC_MSG_CHECKING([whether we need platform-specific build settings])
 case $host_os in

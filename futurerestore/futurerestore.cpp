@@ -13,9 +13,11 @@
 #include <libgen.h>
 #include <zlib.h>
 #include "futurerestore.hpp"
+
 #ifdef HAVE_LIBIPATCHER
 #include <libipatcher/libipatcher.hpp>
 #endif
+
 extern "C"{
 #include "common.h"
 #include "../external/img4tool/img4tool/img4.h"
@@ -90,9 +92,9 @@ bool futurerestore::init(){
     if (_didInit) return _didInit;
     _didInit = (check_mode(_client) != MODE_UNKNOWN);
     if (!(_client->image4supported = is_image4_supported(_client))){
-        info("[INFO] 32bit device detected\n");
+        info("[INFO] 32-bit device detected\n");
     }else{
-        info("[INFO] 64bit device detected\n");
+        info("[INFO] 64-bit device detected\n");
         if (_isPwnDfu) reterror(-90, "isPwnDfu is only allowed for 32bit devices\n");
     }
     return _didInit;
@@ -193,15 +195,14 @@ plist_t futurerestore::nonceMatchesApTickets(){
             _rerestoreiOS9 = (info("Detected iOS 9 re-restore, proceeding in DFU mode\n"),true);
     }
     
-    
     unsigned char* realnonce;
     int realNonceSize = 0;
     if (_rerestoreiOS9) {
-        info("Skipping APNonce check\n");
+        info("Skipping ApNonce check\n");
     }else{
         recovery_get_ap_nonce(_client, &realnonce, &realNonceSize);
         
-        info("Got APNonce from device: ");
+        info("Got ApNonce from device: ");
         int i = 0;
         for (i = 0; i < realNonceSize; i++) {
             info("%02x ", ((unsigned char *)realnonce)[i]);
@@ -232,13 +233,12 @@ plist_t futurerestore::nonceMatchesApTickets(){
         }
     }
     
-    
     return NULL;
 }
 
 const char *futurerestore::nonceMatchesIM4Ms(){
     if (!_didInit) reterror(-1, "did not init\n");
-    if (getDeviceMode(true) != MODE_RECOVERY) reterror(-10, "Device not in recovery mode, can't check apnonce\n");
+    if (getDeviceMode(true) != MODE_RECOVERY) reterror(-10, "Device not in recovery mode, can't check ApNonce\n");
     
     unsigned char* realnonce;
     int realNonceSize = 0;
@@ -256,7 +256,6 @@ const char *futurerestore::nonceMatchesIM4Ms(){
         }
     }
     
-    
     return NULL;
 }
 
@@ -268,7 +267,7 @@ void futurerestore::waitForNonce(vector<const char *>nonces, size_t nonceSize){
     int realNonceSize = 0;
     
     for (auto nonce : nonces){
-        info("waiting for nonce: ");
+        info("waiting for ApNonce: ");
         int i = 0;
         for (i = 0; i < nonceSize; i++) {
             info("%02x ", ((unsigned char *)nonce)[i]);
@@ -306,7 +305,7 @@ void futurerestore::waitForNonce(){
     vector<const char*>nonces;
     
     if (!_client->image4supported)
-        reterror(-77, "Error: waitForNonce is not supported on 32bit devices\n");
+        reterror(-77, "Error: waitForNonce is not supported on 32-bit devices\n");
     
     for (auto im4m : _im4ms){
         nonces.push_back(getBNCHFromIM4M(im4m,&nonceSize));
@@ -322,7 +321,7 @@ void futurerestore::loadAPTickets(const vector<const char *> &apticketPaths){
         
         struct stat fst;
         if (stat(apticketPath, &fst))
-            reterror(-9, "failed to load apticket at %s\n",apticketPath);
+            reterror(-9, "failed to load APTicket at %s\n",apticketPath);
         
         gzFile zf = gzopen(apticketPath, "rb");
         if (zf) {
@@ -369,7 +368,7 @@ void futurerestore::loadAPTickets(const vector<const char *> &apticketPaths){
         plist_get_data_val(ticket, &im4m, &im4msize);
         
         if (!im4msize)
-            reterror(-38, "Error: failed to load shsh file %s\n",apticketPath);
+            reterror(-38, "Error: failed to load signing ticket file %s\n",apticketPath);
         
         _im4ms.push_back(im4m);
         _aptickets.push_back(apticket);
@@ -429,7 +428,6 @@ char *futurerestore::getiBootBuild(){
     return _ibootBuild;
 }
 
-
 pair<ptr_smart<char*>, size_t> getIPSWComponent(struct idevicerestore_client_t* client, plist_t build_identity, string component){
     ptr_smart<char *> path;
     unsigned char* component_data = NULL;
@@ -448,7 +446,6 @@ pair<ptr_smart<char*>, size_t> getIPSWComponent(struct idevicerestore_client_t* 
     return {(char*)component_data,component_size};
 }
 
-
 void futurerestore::enterPwnRecovery(plist_t build_identity, string bootargs){
 #ifndef HAVE_LIBIPATCHER
     reterror(-404, "compiled without libipatcher");
@@ -461,7 +458,6 @@ void futurerestore::enterPwnRecovery(plist_t build_identity, string bootargs){
         reterror(-91,"Unable to connect to DFU device\n");
     irecv_get_mode(_client->dfu->client, &mode);
     
-    
     try {
         iBSSKeys = libipatcher::getFirmwareKey(_client->device->product_type, _client->build, "iBSS");
         iBECKeys = libipatcher::getFirmwareKey(_client->device->product_type, _client->build, "iBEC");
@@ -470,10 +466,8 @@ void futurerestore::enterPwnRecovery(plist_t build_identity, string bootargs){
         reterror(e.code(), "getting keys failed. Are keys publicly available?");
     }
     
-    
     auto iBSS = getIPSWComponent(_client, build_identity, "iBSS");
     iBSS = move(libipatcher::patchiBSS((char*)iBSS.first, iBSS.second, iBSSKeys));
-    
     
     auto iBEC = getIPSWComponent(_client, build_identity, "iBEC");
     iBEC = move(libipatcher::patchiBEC((char*)iBEC.first, iBEC.second, iBECKeys, bootargs));
@@ -941,10 +935,8 @@ int futurerestore::doRestore(const char *ipsw){
         reterror(-11,"ERROR: Unable to get SHSH blobs for SEP\n");
     }
     
-    
     if (_client->image4supported && (!_client->sepfwdatasize || !_client->sepfwdata))
         reterror(-55, "SEP not loaded, refusing to continue");
-    
     
     if (client->mode->index == MODE_RESTORE) {
         info("About to restore device... \n");
@@ -1017,10 +1009,8 @@ int futurerestore::doJustBoot(const char *ipsw, string bootargs){
     if (!(build_identity = getBuildidentityWithBoardconfig(buildmanifest, client->device->hardware_model, 0)))
         reterror(-5,"ERROR: Unable to find any build identities for IPSW\n");
 
-    
     /* print information about current build identity */
     build_identity_print_information(build_identity);
-    
     
     //check for enterpwnrecovery, because we could be in DFU mode
     if (!_enterPwnRecoveryRequested)
@@ -1331,7 +1321,6 @@ char *futurerestore::getNonceFromSCAB(const char* scab, size_t *nonceSize){
     }
     return NULL;
     
-    
 parsebnch:
     nonceOctet++;
     
@@ -1341,10 +1330,8 @@ parsebnch:
         if (nonceSize) *nonceSize = asn1Len(nonceOctet).dataLen;
     }
     
-    
 error:
     return ret;
-    
 }
 
 uint64_t futurerestore::getEcidFromSCAB(const char* scab){
@@ -1371,10 +1358,8 @@ uint64_t futurerestore::getEcidFromSCAB(const char* scab){
     }
     reterror(-76, "Error: can't read ecid from SCAB\n");
     
-    
 parseEcid:
     ecidInt++;
-    
     
     len = asn1Len(ecidInt);
     ecidInt += len.sizeBytes + len.dataLen;
@@ -1412,14 +1397,12 @@ const char *futurerestore::getRamdiskHashFromSCAB(const char* scab, size_t *hash
     }
     return NULL;
     
-    
 parsebnch:
     nonceOctet++;
     
     ret = nonceOctet + asn1Len(nonceOctet).sizeBytes;
     if (hashSize)
         *hashSize = asn1Len(nonceOctet).dataLen;
-    
     
 error:
     return ret;
@@ -1466,7 +1449,6 @@ uint64_t futurerestore::getEcidFromIM4M(const char* im4m){
     ecidInt = (char*)asn1ElementAtIndex(ecid, 1);
     ecidInt++;
     
-   
     len = asn1Len(ecidInt);
     ecidInt += len.sizeBytes;
     while (len.dataLen--) {
@@ -1477,7 +1459,6 @@ uint64_t futurerestore::getEcidFromIM4M(const char* im4m){
 error:
     return ret;
 }
-
 
 char *futurerestore::getNonceFromAPTicket(const char* apticketPath){
     char *ret = NULL;
@@ -1540,7 +1521,6 @@ char *futurerestore::getPathOfElementInManifest(const char *element, const char 
 noerror:
     return pathStr;
 }
-
 
 static int zip_test_file(zip_t *za, zip_uint64_t idx, zip_uint64_t size, zip_uint32_t crc) {
     zip_file_t *zf;

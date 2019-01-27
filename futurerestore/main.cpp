@@ -46,10 +46,12 @@ static struct option longopts[] = {
     { "latest-baseband",    no_argument,            NULL, '1' },
     { "no-baseband",        no_argument,            NULL, '2' },
     { "exit-recovery",      no_argument,            NULL, '5' },
+    
 #ifdef HAVE_LIBIPATCHER
     { "use-pwndfu",         no_argument,            NULL, '3' },
     { "just-boot",          optional_argument,      NULL, '4' },
 #endif
+    
     { NULL, 0, NULL, 0 }
 };
 
@@ -64,9 +66,9 @@ void cmd_help(){
     printf("Usage: futurerestore [OPTIONS] /path/to/ipsw\n");
     printf("Tool, which supported latest restore unsigned firmware methods for all iOS devices.\n\n");
     printf("Options:\n\n");
-    printf("  -t, --apticket PATH\t\tAPTicket used for restoring\n");
+    printf("  -t, --apticket PATH\t\tSigning tickets used for restoring\n");
     printf("  -u, --update\t\t\tUpdate instead of erase install (requires appropriate APTicket)\n");
-    printf("              \t\t\tNOT recommended to use this parameter, if you update from jailbroken firmware\n");
+    printf("              \t\t\tNOT recommended to use this parameter, if you update from jailbroken firmware!\n");
     printf("  -w, --wait\t\t\tKeep rebooting until ApNonce matches APTicket (ApNonce collision, unreliable)\n");
     printf("  -d, --debug\t\t\tVerbose debug output (useful for error logs)\n");
     printf("      --latest-sep\t\tUse latest signed sep instead of manually specifying one (may cause bad restore)\n");
@@ -104,7 +106,7 @@ int main(int argc, const char * argv[]) {
 
     int err=0;
     int res = -1;
-    printf("Version: " VERSION_COMMIT_SHA_FUTURERESTORE" - " VERSION_COMMIT_COUNT_FUTURERESTORE"\n"); // versioning
+    printf("Version: " VERSION_SHA_FUTURERESTORE" - " VERSION_COUNT_FUTURERESTORE"\n"); // versioning
     
 #ifdef HAVE_LIBIPATCHER
     printf("%s\n",libipatcher::version().c_str());
