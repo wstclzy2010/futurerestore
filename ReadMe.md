@@ -6,6 +6,7 @@ Only use if you are sure what you're doing.
 Latest release available [here](https://github.com/s0uthwest/futurerestore/releases) for Windows, macOS & Linux.
 
 I'll compile only macOS & Linux version, Windows version won't be compiled.
+__Face ID devices successfully restores now!__
 
 ## Features
 * Supports the following downgrade methods
