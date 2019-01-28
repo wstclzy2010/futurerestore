@@ -93,8 +93,6 @@ public:
     char *getLatestFirmwareUrl();
     void loadLatestBaseband();
     void loadLatestSep();
-    void loadSepFromIpsw(const char *ipswPath);
-    void loadBasebandFromIpsw(const char *ipswPath);
     
     void setSepManifestPath(const char *sepManifestPath);
     void setBasebandManifestPath(const char *basebandManifestPath);
