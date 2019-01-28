@@ -95,17 +95,19 @@ public:
     void loadLatestSep();
     void loadSepFromIpsw(const char *ipswPath);
     void loadBasebandFromIpsw(const char *ipswPath);
-
-    void loadSep(const char *sepPath, const char *sepManifestPath);
-    void setBasebandPath(const char *basebandPath, const char *basebandManifestPath);
+    
+    void setSepManifestPath(const char *sepManifestPath);
+    void setBasebandManifestPath(const char *basebandManifestPath);
+    void loadSep(const char *sepPath);
+    void setBasebandPath(const char *basebandPath);
     bool isUpdateInstall(){return _isUpdateInstall;};
-
+    
     plist_t sepManifest(){return _sepbuildmanifest;};
     plist_t basebandManifest(){return _basebandbuildmanifest;};
     const char *sepManifestPath(){return _sepbuildmanifestPath;};
     const char *basebandManifestPath(){return _basebandbuildmanifestPath;};
     bool is32bit(){return !is_image4_supported(_client);};
-
+    
     uint64_t getBasebandGoldCertIDFromDevice();
     uint64_t getBBSNumSizeFromDevice();
     

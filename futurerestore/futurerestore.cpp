@@ -74,8 +74,6 @@ extern "C"{
 #define safeFree(buf) if (buf) free(buf), buf = NULL
 #define safePlistFree(buf) if (buf) plist_free(buf), buf = NULL
 
-static int zip_test_file(zip_t *za, zip_uint64_t idx, zip_uint64_t size, zip_uint32_t crc);
-
 futurerestore::futurerestore(bool isUpdateInstall, bool isPwnDfu) : _isUpdateInstall(isUpdateInstall), _isPwnDfu(isPwnDfu){
     _client = idevicerestore_client_new();
     if (_client == NULL) throw std::string("could not create idevicerestore client\n");
@@ -646,7 +644,7 @@ int futurerestore::doRestore(const char *ipsw){
     
     if (im4mEcid != deviceEcid) {
         error("ECID inside APTicket does not match device ECID\n");
-        printf("APTicket is valid for %16llu (dec) but device is %16llu (dec)\n",im4mEcid,deviceEcid);
+        printf("APTicket is valid for %16lu (dec) but device is %16lu (dec)\n",im4mEcid,deviceEcid);
         reterror(-45, "APTicket can't be used for restoring this device\n");
     }else
         printf("Verified ECID in APTicket matches device ECID\n");
@@ -662,7 +660,7 @@ int futurerestore::doRestore(const char *ipsw){
         
         if (im4mEcid != deviceEcid) {
             error("ECID inside APTicket does not match device ECID\n");
-            printf("APTicket is valid for %16llu (dec) but device is %16llu (dec)\n",im4mEcid,deviceEcid);
+            printf("APTicket is valid for %16lu (dec) but device is %16lu (dec)\n",im4mEcid,deviceEcid);
             reterror(-45, "APTicket can't be used for restoring this device\n");
         }else
             printf("Verified ECID in APTicket matches device ECID\n");
@@ -1143,6 +1141,7 @@ char *futurerestore::getLatestFirmwareUrl(){
     return getLatestManifest(),__latestFirmwareUrl;
 }
 
+
 void futurerestore::loadLatestBaseband(){
     char *manifeststr = getLatestManifest();
     char *pathStr = getPathOfElementInManifest("BasebandFirmware", manifeststr, _client, 0);
@@ -1150,7 +1149,8 @@ void futurerestore::loadLatestBaseband(){
     if (downloadPartialzip(getLatestFirmwareUrl(), pathStr, _basebandPath = BASEBAND_TMP_PATH))
         reterror(-32, "could not download baseband\n");
     saveStringToFile(manifeststr, BASEBAND_MANIFEST_TMP_PATH);
-    setBasebandPath(BASEBAND_TMP_PATH, BASEBAND_MANIFEST_TMP_PATH);
+    setBasebandManifestPath(BASEBAND_MANIFEST_TMP_PATH);
+    setBasebandPath(BASEBAND_TMP_PATH);
 }
 
 void futurerestore::loadLatestSep(){
@@ -1159,8 +1159,9 @@ void futurerestore::loadLatestSep(){
     info("downloading SEP\n\n");
     if (downloadPartialzip(getLatestFirmwareUrl(), pathStr, SEP_TMP_PATH))
         reterror(-33, "could not download SEP\n");
+    loadSep(SEP_TMP_PATH);
     saveStringToFile(manifeststr, SEP_MANIFEST_TMP_PATH);
-    loadSep(SEP_TMP_PATH, SEP_MANIFEST_TMP_PATH);
+    setSepManifestPath(SEP_MANIFEST_TMP_PATH);
 }
 
 void futurerestore::loadSepFromIpsw(const char *ipswPath) {
@@ -1193,10 +1194,8 @@ void futurerestore::loadSepFromIpsw(const char *ipswPath) {
     plist_to_xml(_sepbuildmanifest, &buildManifestString, &buildManifestSize);
     saveStringToFile(buildManifestString, SEP_MANIFEST_TMP_PATH);
     _sepbuildmanifestPath = SEP_MANIFEST_TMP_PATH;
-    info("Extracted SEP with size %lu\n", _client->sepfwdatasize);
 
-    free(buildManifestString);
-    free(path);
+    info("Extracted SEP with size %lu\n", _client->sepfwdatasize);
 }
 
 void futurerestore::loadBasebandFromIpsw(const char *ipswPath) {
@@ -1229,64 +1228,55 @@ void futurerestore::loadBasebandFromIpsw(const char *ipswPath) {
     if (!basebandFile || fwrite(basebandFirmware, 1, basebandFirmwareSize, basebandFile) != basebandFirmwareSize) {
         reterror(-8, "ERROR: Failed to write baseband firmware to temporary file\n");
     }
-    fclose(basebandFile);
 
     plist_to_xml(_basebandbuildmanifest, &buildManifestString, &buildManifestSize);
     saveStringToFile(buildManifestString, BASEBAND_MANIFEST_TMP_PATH);
-    info("Extracted BasebandFirmware with size %d\n", basebandFirmwareSize);
-    setBasebandPath(BASEBAND_TMP_PATH, BASEBAND_MANIFEST_TMP_PATH);
+    _basebandbuildmanifestPath = BASEBAND_MANIFEST_TMP_PATH;
+    _basebandPath = BASEBAND_TMP_PATH;
 
-    free(basebandFirmware);
-    free(buildManifestString);
+    info("Extracted BasebandFirmware with size %d\n", basebandFirmwareSize);
 }
 
-void futurerestore::loadSep(const char *sepPath, const char *sepManifestPath) {
+void futurerestore::setSepManifestPath(const char *sepManifestPath){
     if (!(_sepbuildmanifest = loadPlistFromFile(_sepbuildmanifestPath = sepManifestPath)))
         reterror(-14, "failed to load SEPManifest");
+}
 
+void futurerestore::setBasebandManifestPath(const char *basebandManifestPath){
+    if (!(_basebandbuildmanifest = loadPlistFromFile(_basebandbuildmanifestPath = basebandManifestPath)))
+        reterror(-14, "failed to load BasebandManifest");
+};
+
+void futurerestore::loadSep(const char *sepPath){
     FILE *fsep = fopen(sepPath, "rb");
     if (!fsep)
         reterror(-15, "failed to read SEP\n");
-
+    
     fseek(fsep, 0, SEEK_END);
-    _client->sepfwdatasize = static_cast<size_t>(ftell(fsep));
+    _client->sepfwdatasize = ftell(fsep);
     fseek(fsep, 0, SEEK_SET);
-
-    if (!(_client->sepfwdata = (char *) malloc(_client->sepfwdatasize)))
+    
+    if (!(_client->sepfwdata = (char*)malloc(_client->sepfwdatasize)))
         reterror(-15, "failed to malloc memory for SEP\n");
-
-    size_t freadRet = 0;
+    
+    size_t freadRet=0;
     if ((freadRet = fread(_client->sepfwdata, 1, _client->sepfwdatasize, fsep)) != _client->sepfwdatasize)
-        reterror(-15, "failed to load SEP. size=%zu but fread returned %zu\n", _client->sepfwdatasize, freadRet);
-
+        reterror(-15, "failed to load SEP. size=%zu but fread returned %zu\n",_client->sepfwdatasize,freadRet);
+    
     fclose(fsep);
 }
 
-void futurerestore::setBasebandPath(const char *basebandPath, const char *basebandManifestPath) {
-    if (!(_basebandbuildmanifest = loadPlistFromFile(_basebandbuildmanifestPath = basebandManifestPath)))
-        reterror(-14, "failed to load BasebandManifest");
 
-    int zerr;
-    zip *za = zip_open(basebandPath, 0, &zerr);
-    if (!za) {
-        reterror(-15, "failed to open baseband '%s': %d\n", basebandPath, zerr);
-    }
-    struct zip_stat st{};
-    zip_int64_t entries = zip_get_num_entries(za, 0);
-    for (zip_uint64_t i = 0; i < entries; i++) {
-        zerr = zip_stat_index(za, i, 0, &st);
-        if (zerr == -1 || (zerr = zip_test_file(za, i, st.size, st.crc))) {
-            reterror(-16, "Failed to verify baseband integrity. %d\n", zerr);
-        }
-    }
-    info("Verified baseband integrity.\n");
-
+void futurerestore::setBasebandPath(const char *basebandPath){
+    FILE *fbb = fopen(basebandPath, "rb");
+    if (!fbb)
+        reterror(-15, "failed to read Baseband");
     _basebandPath = basebandPath;
-    zip_close(za);
+    fclose(fbb);
 }
 
 inline void futurerestore::saveStringToFile(const char *str, const char *path){
-    FILE *f = fopen(path, "wb");
+    FILE *f = fopen(path, "w");
     if (!f) reterror(-41,"can't save file at %s\n",path);
     else{
         size_t len = strlen(str);
@@ -1522,6 +1512,7 @@ noerror:
     return pathStr;
 }
 
+<<<<<<< HEAD
 static int zip_test_file(zip_t *za, zip_uint64_t idx, zip_uint64_t size, zip_uint32_t crc) {
     zip_file_t *zf;
     char buf[8192];
@@ -1561,3 +1552,5 @@ static int zip_test_file(zip_t *za, zip_uint64_t idx, zip_uint64_t size, zip_uin
 
     return 0;
 }
+=======
+>>>>>>> parent of dc55368... Fix baseband from IPSW; add simple integrity check
